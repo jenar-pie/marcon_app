@@ -41,11 +41,11 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
   ];
 
   final List<String> _productList = [
-    'Lokativa Enterprise CRM',
-    'Lokativa Pro Plan',
-    'Lokativa Custom CRM',
-    'Lokativa Fleet & CRM',
-    'Lokativa Basic Plan',
+    'Marcon Kerjasama',
+    'Marcon Penawaran Produk',
+    'Marcon Penjualan Produk',
+    'Marcon Revise Penawaran',
+    'Marcon Revise Kerjasama',
   ];
 
   @override
@@ -183,17 +183,15 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
     final approvalResult = await Navigator.push<Map<String, dynamic>>(
       context,
       MaterialPageRoute(
-        builder: (_) => ApprovalProposalScreen(
-          proposalData: proposalData,
-        ),
+        builder: (_) => ApprovalProposalScreen(proposalData: proposalData),
       ),
     );
 
     if (mounted) {
-      Navigator.of(context).pop(approvalResult ?? {
-        'status': 'Menunggu Approval',
-        'proposal': proposalData,
-      });
+      Navigator.of(context).pop(
+        approvalResult ??
+            {'status': 'Menunggu Approval', 'proposal': proposalData},
+      );
     }
   }
 
@@ -353,16 +351,18 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                                               controller: _priceController,
                                               style:
                                                   GoogleFonts.plusJakartaSans(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.bold,
-                                                color: const Color(0xFF0D2B45),
-                                              ),
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: const Color(
+                                                      0xFF0D2B45,
+                                                    ),
+                                                  ),
                                               decoration: const InputDecoration(
                                                 contentPadding:
                                                     EdgeInsets.symmetric(
-                                                  horizontal: 14,
-                                                  vertical: 10,
-                                                ),
+                                                      horizontal: 14,
+                                                      vertical: 10,
+                                                    ),
                                                 border: InputBorder.none,
                                               ),
                                             ),
@@ -396,8 +396,9 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                                 border: Border.all(
-                                                  color:
-                                                      const Color(0xFFFF7A00),
+                                                  color: const Color(
+                                                    0xFFFF7A00,
+                                                  ),
                                                   width: 1.2,
                                                 ),
                                               ),
@@ -406,8 +407,8 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                                                   Container(
                                                     padding:
                                                         const EdgeInsets.all(
-                                                      10,
-                                                    ),
+                                                          10,
+                                                        ),
                                                     child: const Icon(
                                                       Icons
                                                           .calendar_today_outlined,
@@ -418,27 +419,30 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                                                   Container(
                                                     width: 1.2,
                                                     height: 42,
-                                                    color:
-                                                        const Color(0xFFFF7A00),
+                                                    color: const Color(
+                                                      0xFFFF7A00,
+                                                    ),
                                                   ),
                                                   Expanded(
                                                     child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                          ),
                                                       child: Text(
                                                         _expiredDateController
                                                             .text,
-                                                        style: GoogleFonts
-                                                            .plusJakartaSans(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: const Color(
-                                                            0xFF0D2B45,
-                                                          ),
-                                                        ),
+                                                        style:
+                                                            GoogleFonts.plusJakartaSans(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF0D2B45,
+                                                                  ),
+                                                            ),
                                                       ),
                                                     ),
                                                   ),
@@ -580,8 +584,7 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                                     ),
                                     Switch(
                                       value: _isDiscountRequested,
-                                      activeThumbColor:
-                                          const Color(0xFFFF7A00),
+                                      activeThumbColor: const Color(0xFFFF7A00),
                                       activeTrackColor: const Color(0xFF0D2B45)
                                           .withValues(alpha: 0.25),
                                       onChanged: (val) {
@@ -692,10 +695,7 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFFFF7A00),
-                width: 1.2,
-              ),
+              border: Border.all(color: const Color(0xFFFF7A00), width: 1.2),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -786,10 +786,7 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFFFF7A00),
-                width: 1.2,
-              ),
+              border: Border.all(color: const Color(0xFFFF7A00), width: 1.2),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

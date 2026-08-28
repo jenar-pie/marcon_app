@@ -31,6 +31,8 @@ class _SplashScreenState extends State<SplashScreen>
     _animController.forward();
   }
 
+  bool _isNavigating = false;
+
   @override
   void dispose() {
     _animController.dispose();
@@ -38,7 +40,9 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _goToLogin() {
-    Navigator.push(
+    if (_isNavigating || !mounted) return;
+    _isNavigating = true;
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
     );

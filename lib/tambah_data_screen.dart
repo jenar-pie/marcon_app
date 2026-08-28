@@ -142,7 +142,7 @@ class _TambahDataScreenState extends State<TambahDataScreen> {
       'potential': potentialText.isEmpty ? '-' : potentialText,
       'category': _selectedCategory, // 'Prospek' or 'Leads'
       'status': _selectedCategory == 'Prospek' ? 'Pipeline' : 'Lead Baru',
-      'date': dateText, // Tanggal masuk yang diinputkan
+      'date': dateText, // Waktu masuk yang diinputkan
     };
 
     if (widget.onDataSaved != null) {
@@ -306,11 +306,11 @@ class _TambahDataScreenState extends State<TambahDataScreen> {
                                 ),
                                 const SizedBox(height: 12),
 
-                                // Field 7: Tanggal Masuk (Khusus Prospek / Form)
+                                // Field 7: Waktu Masuk
                                 _buildEntryDateField(),
                                 const SizedBox(height: 12),
 
-                                // Field 8: Estimasi Nilai potensial (Required for Prospek, Optional for Leads)
+                                // Field 8: Estimasi Nilai potensial
                                 _buildPotentialValueField(isProspek: isProspek),
                                 const SizedBox(height: 12),
 
@@ -359,7 +359,7 @@ class _TambahDataScreenState extends State<TambahDataScreen> {
     );
   }
 
-  // ── TANGGAL MASUK PILL FIELD ───────────────────────────────────────────────
+  // ── WAKTU MASUK PILL FIELD ─────────────────────────────────────────────────
   Widget _buildEntryDateField() {
     return GestureDetector(
       onTap: _selectEntryDate,
@@ -385,8 +385,8 @@ class _TambahDataScreenState extends State<TambahDataScreen> {
                 const SizedBox(width: 10),
                 Text(
                   _entryDateController.text.isEmpty
-                      ? 'Tanggal Masuk'
-                      : 'Tanggal Masuk: ${_entryDateController.text}',
+                      ? 'Waktu Masuk'
+                      : 'Waktu Masuk: ${_entryDateController.text}',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
@@ -483,7 +483,7 @@ class _TambahDataScreenState extends State<TambahDataScreen> {
           Text(
             isProspek
                 ? 'wajib diisi untuk Prospek (angka atau teks)'
-                : 'kosongkan jika Leads (opsional)',
+                : 'bisa diisi untuk Leads (opsional)',
             style: GoogleFonts.plusJakartaSans(
               fontSize: 10,
               fontWeight: FontWeight.w600,

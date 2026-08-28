@@ -224,7 +224,7 @@ class _ApprovalProposalScreenState extends State<ApprovalProposalScreen> {
   Widget build(BuildContext context) {
     final company =
         widget.proposalData['company'] ?? 'PT Telekomunikasi Indonesia';
-    final product = widget.proposalData['product'] ?? 'Lokativa Enterprise CRM';
+    final product = widget.proposalData['product'] ?? 'Marcon Enterprise CRM';
     final price = widget.proposalData['price'] ?? 'Rp 85.000.000';
     final expiredDate = widget.proposalData['expiredDate'] ?? '30/09/2026';
     final fileName =

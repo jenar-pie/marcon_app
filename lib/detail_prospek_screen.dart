@@ -32,7 +32,7 @@ class _DetailProspekScreenState extends State<DetailProspekScreen> {
         title: 'Data Masuk',
         date: entryDate,
         time: '09:00',
-        desc: 'Prospek berhasil didaftarkan ke sistem Lokativa CRM',
+        desc: 'Prospek berhasil didaftarkan ke sistem Marcon CRM',
         isCompleted: true,
       ),
       _ActivityItem(
@@ -47,7 +47,7 @@ class _DetailProspekScreenState extends State<DetailProspekScreen> {
         date: entryDate,
         time: '14:00',
         desc: 'Presentasi proposal solusi dan penjelasan fitur produk',
-        isCompleted: true,
+        isCompleted: false,
       ),
     ];
   }
@@ -193,7 +193,7 @@ class _DetailProspekScreenState extends State<DetailProspekScreen> {
     final data = widget.data;
     final companyName = data?['company'] ?? data?['name'] ?? 'Nama perusahaan';
     final source = data?['source'] ?? 'Website Inbound';
-    final product = data?['product'] ?? 'SaaS Lokativa CRM';
+    final product = data?['product'] ?? 'SaaS Marcon CRM';
     final contactName = data?['contactName'];
     final picName = contactName != null && contactName != '-'
         ? '$contactName (${data?['pic'] ?? data?['role'] ?? 'PIC'})'
@@ -353,7 +353,7 @@ class _DetailProspekScreenState extends State<DetailProspekScreen> {
                           _infoRow('No. Telepon', phone),
                           _infoRow('Alamat', address),
                           _infoRow('Potensi nilai', potential),
-                          _infoRow('Tanggal masuk', entryDate),
+                          _infoRow('Waktu masuk', entryDate),
                           const SizedBox(height: 14),
 
                           // ── Hubungi ─────────────────────────────────────

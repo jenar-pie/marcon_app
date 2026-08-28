@@ -1,0 +1,26 @@
+[
+  {
+    "company": "PT Sample Proposal",
+    "pic": "Contact - Sales Manager",
+    "contactName": "Andi Sample",
+    "phone": "0811-1111-1111",
+    "address": "Jl. Sample No.1, Jakarta",
+    "potensi": "Rp 100.000.000",
+    "status": "Proposal",
+    "source": "Referral",
+    "product": "Marcon Premium",
+    "date": "25 Feb 2026"
+  },
+  {
+    "company": "PT Sample Lead",
+    "pic": "Contact - Owner",
+    "contactName": "Budi Lead",
+    "phone": "0812-2222-2222",
+    "address": "Jl. Lead St, Bandung",
+    "potensi": "Rp 50.000.000",
+    "status": "Lead Baru",
+    "source": "Website",
+    "product": "Marcon Basic",
+    "date": "24 Feb 2026"
+  }
+]

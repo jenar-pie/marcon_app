@@ -4,6 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'detail_prospek_screen.dart';
 import 'tambah_data_screen.dart';
+import 'detail_leads.dart';
+
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 
 class ProspekScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -23,108 +28,31 @@ class _ProspekScreenState extends State<ProspekScreen> {
   late int _selectedTab;
   final TextEditingController _searchController = TextEditingController();
 
-  // Data for List Prospek (Orange Cards)
-  final List<Map<String, dynamic>> _prospekList = [
-    {
-      'company': 'PT Telekomunikasi Indonesia',
-      'pic': 'Bertemu dengan - Manajer IT',
-      'contactName': 'Ir. Hendra Gunawan',
-      'phone': '0811-2233-4455',
-      'address': 'Jl. Gatot Subroto No. 52, Jakarta Selatan',
-      'potensi': 'Rp 85.000.000',
-      'status': 'Pipeline',
-      'source': 'Corporate Inbound',
-      'product': 'Lokativa Enterprise CRM',
-      'date': '18 Feb 2026',
-    },
-    {
-      'company': 'CV Sentosa Abadi Jaya',
-      'pic': 'Bertemu dengan - Procurement Lead',
-      'contactName': 'Siti Rahmawati',
-      'phone': '0821-9988-7766',
-      'address': 'Kawasan Industri MM2100, Cikarang',
-      'potensi': 'Rp 35.000.000',
-      'status': 'Pipeline',
-      'source': 'Pameran Expo Industri',
-      'product': 'Lokativa Pro Plan',
-      'date': '20 Feb 2026',
-    },
-    {
-      'company': 'PT Digital Mega Pratama',
-      'pic': 'Bertemu dengan - Direktur Operasional',
-      'contactName': 'Agus Supriyadi',
-      'phone': '0857-4433-2211',
-      'address': 'Jl. Asia Afrika No. 10, Bandung',
-      'potensi': 'Rp 50.000.000',
-      'status': 'Meeting',
-      'source': 'Referral Mitra',
-      'product': 'Lokativa Custom CRM',
-      'date': '21 Feb 2026',
-    },
-    {
-      'company': 'PT Nusantara Logistik Makmur',
-      'pic': 'Bertemu dengan - General Manager',
-      'contactName': 'Dimas Anggara',
-      'phone': '0878-1122-3344',
-      'address': 'Jl. Pemuda No. 88, Surabaya',
-      'potensi': 'Rp 120.000.000',
-      'status': 'Meeting',
-      'source': 'Website Leads',
-      'product': 'Lokativa Fleet & CRM',
-      'date': '22 Feb 2026',
-    },
-  ];
+  // Data for List Prospek (Orange Cards) - loaded from asset
+  late List<Map<String, dynamic>> _prospekList = [];
 
-  // Data for Leads Tab (Matching Orange Card Style)
-  final List<Map<String, dynamic>> _leadsList = [
-    {
-      'company': 'PT Maju Bersama Logistik',
-      'name': 'PT Maju Bersama Logistik',
-      'role': 'Purchasing Manager',
-      'pic': 'Purchasing Manager',
-      'contactName': 'Budi Santoso',
-      'phone': '0812-3456-7890',
-      'address': 'Jl. Daan Mogot Km. 14, Jakarta Barat',
-      'status': 'Lead Baru',
-      'potensi': 'Rp 15.000.000',
-      'source': 'Website Form',
-      'product': 'Lokativa Basic Plan',
-      'date': '22 Feb 2026',
-    },
-    {
-      'company': 'CV Surya Kencana Abadi',
-      'name': 'CV Surya Kencana Abadi',
-      'role': 'Direktur Operasional',
-      'pic': 'Direktur Operasional',
-      'contactName': 'Dewi Lestari',
-      'phone': '0813-9876-5432',
-      'address': 'Jl. Ahmad Yani No. 45, Bekasi',
-      'status': 'Follow Up',
-      'potensi': 'Rp 28.000.000',
-      'source': 'LinkedIn Outreach',
-      'product': 'Lokativa Business Plan',
-      'date': '21 Feb 2026',
-    },
-    {
-      'company': 'Toko Bangunan Sejahtera',
-      'name': 'Toko Bangunan Sejahtera',
-      'role': 'Owner / Pemilik',
-      'pic': 'Owner / Pemilik',
-      'contactName': 'Hendra Wijaya',
-      'phone': '0857-1122-3344',
-      'address': 'Jl. Raya Bogor Km. 28, Depok',
-      'status': 'Lead Baru',
-      'potensi': 'Rp 10.000.000',
-      'source': 'Direct Call',
-      'product': 'Lokativa Retail CRM',
-      'date': '20 Feb 2026',
-    },
-  ];
+  // Data for Leads Tab (Matching Orange Card Style) - loaded from asset
+  late List<Map<String, dynamic>> _leadsList = [];
+
+  Future<void> _loadSampleData() async {
+    final String jsonString = await rootBundle.loadString(
+      'lib/assets/sample_prospek.json',
+    );
+    final List<dynamic> jsonData = json.decode(jsonString);
+    final List<Map<String, dynamic>> data = jsonData
+        .cast<Map<String, dynamic>>();
+    setState(() {
+      _prospekList = data.where((e) => e['status'] != 'Lead Baru').toList();
+      // Leads are entries with status "Lead Baru"
+      _leadsList = data.where((e) => e['status'] == 'Lead Baru').toList();
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _selectedTab = widget.initialTab;
+    _loadSampleData();
   }
 
   @override
@@ -164,7 +92,7 @@ class _ProspekScreenState extends State<ProspekScreen> {
             'potensi': result['potential'],
             'status': 'Pipeline',
             'source': 'Manual Input',
-            'product': 'Lokativa Solution',
+            'product': 'Layanan Medis Utama (Core Medical Services)',
             'date': result['date'] ?? '23 Agu 2026',
           });
           _selectedTab = 1; // Direct to List Prospek
@@ -180,7 +108,7 @@ class _ProspekScreenState extends State<ProspekScreen> {
             'status': 'Lead Baru',
             'potensi': result['potential'],
             'source': 'Manual Input',
-            'product': 'Lokativa Solution',
+            'product': 'Layanan Medis Utama (Core Medical Services)',
             'date': result['date'] ?? '23 Agu 2026',
           });
           _selectedTab = 0; // Direct to Leads
@@ -233,7 +161,7 @@ class _ProspekScreenState extends State<ProspekScreen> {
                         ),
                       ),
                       Text(
-                        'Leads & CRM',
+                        _selectedTab == 2 ? 'Kanban Prospek' : 'Leads & CRM',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -242,90 +170,91 @@ class _ProspekScreenState extends State<ProspekScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 14),
-
-                  // Search Field + "+ Baru" Button Row
-                  Row(
-                    children: [
-                      // White Search Field Pill
-                      Expanded(
-                        child: Container(
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              color: const Color(0xFF0D2B45),
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'Cari Perusahaan atau PIC',
-                              hintStyle: GoogleFonts.plusJakartaSans(
-                                fontSize: 13,
-                                color: Colors.grey[400],
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-
-                      // "+ Baru" Button (Dark Navy)
-                      GestureDetector(
-                        onTap: _openTambahData,
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
-                          height: 44,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF0D2B45),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
-                                blurRadius: 6,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                'Baru',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                  if (_selectedTab != 2) ...[
+                    const SizedBox(height: 14),
+                    // Search Field + "+ Baru" Button Row
+                    Row(
+                      children: [
+                        // White Search Field Pill
+                        Expanded(
+                          child: Container(
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
                                 ),
+                              ],
+                            ),
+                            child: TextField(
+                              controller: _searchController,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13,
+                                color: const Color(0xFF0D2B45),
                               ),
-                            ],
+                              decoration: InputDecoration(
+                                hintText: 'Cari Perusahaan atau PIC',
+                                hintStyle: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  color: Colors.grey[400],
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                        const SizedBox(width: 10),
+
+                        // "+ Baru" Button (Dark Navy)
+                        GestureDetector(
+                          onTap: _openTambahData,
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            height: 44,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0D2B45),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.15),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Baru',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -387,7 +316,9 @@ class _ProspekScreenState extends State<ProspekScreen> {
                                   height: 46,
                                   padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFECC49E), // Peach Pill
+                                    color: const Color(
+                                      0xFFECC49E,
+                                    ), // Peach Pill
                                     borderRadius: BorderRadius.circular(23),
                                   ),
                                   child: Row(
@@ -647,7 +578,7 @@ class _ProspekScreenState extends State<ProspekScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Line 1: Nama Leads / Perusahaan & Badge Status
+          // Line 1: Nama Leads / Perusahaan & Badge Waktu Masuk
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -664,7 +595,7 @@ class _ProspekScreenState extends State<ProspekScreen> {
               ),
               const SizedBox(width: 8),
 
-              // Status Badge (Dark Navy)
+              // Waktu Masuk Badge (Dark Navy)
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
@@ -675,7 +606,7 @@ class _ProspekScreenState extends State<ProspekScreen> {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Text(
-                  item['status'] ?? 'Lead Baru',
+                  item['date'] ?? 'Waktu masuk',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -687,9 +618,9 @@ class _ProspekScreenState extends State<ProspekScreen> {
           ),
           const SizedBox(height: 3),
 
-          // Line 2: Jabatan / PIC
+          // Line 2: PIC & No Telp
           Text(
-            'Jabatan / PIC: ${item['role'] ?? item['pic'] ?? '-'}',
+            'PIC: ${item['contactName'] ?? item['role'] ?? item['pic'] ?? '-'} (${item['phone'] ?? '-'})',
             style: GoogleFonts.plusJakartaSans(
               fontSize: 13,
               fontWeight: FontWeight.w500,
@@ -698,9 +629,9 @@ class _ProspekScreenState extends State<ProspekScreen> {
           ),
           const SizedBox(height: 2),
 
-          // Line 3: Nama Kontak & Nomor Telepon
+          // Line 3: Sumber Lead
           Text(
-            'Kontak: ${item['contactName'] ?? '-'} (${item['phone'] ?? '-'})',
+            'Sumber lead: ${item['source'] ?? 'Manual Input'}',
             style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
               fontWeight: FontWeight.w500,
@@ -709,7 +640,7 @@ class _ProspekScreenState extends State<ProspekScreen> {
           ),
           const SizedBox(height: 6),
 
-          // Line 4: Potensi Nilai & Konversi ke Prospek
+          // Line 4: Potensi Nilai & Lihat Detail
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -736,40 +667,69 @@ class _ProspekScreenState extends State<ProspekScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  // Convert Lead to Prospek
-                  setState(() {
-                    _prospekList.insert(0, {
-                      'company': item['name'] ?? item['company'],
-                      'name': item['name'] ?? item['company'],
-                      'pic':
-                          'Bertemu dengan - ${item['role'] ?? item['pic'] ?? ''}',
-                      'contactName': item['contactName'],
-                      'phone': item['phone'],
-                      'address': item['address'],
-                      'potensi': item['potensi'],
-                      'status': 'Pipeline',
-                      'source': item['source'] ?? 'Lead Conversion',
-                      'product': item['product'] ?? 'Lokativa Plan',
-                      'date': '23 Agu 2026',
-                    });
-                    _leadsList.remove(item);
-                    _selectedTab = 1; // Switch to List Prospek
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        '${item['name']} berhasil dikonversi ke Prospek!',
-                      ),
-                      backgroundColor: const Color(0xFF0D2B45),
-                    ),
-                  );
+                onTap: () async {
+                  final result = await Navigator.of(context)
+                      .push<Map<String, dynamic>>(
+                        MaterialPageRoute(
+                          builder: (_) => DetailLeadsScreen(data: item),
+                        ),
+                      );
+                  if (result != null) {
+                    if (result['action'] == 'convert') {
+                      final convertedData = result['data'];
+                      setState(() {
+                        _prospekList.insert(0, {
+                          'company':
+                              convertedData['company'] ??
+                              convertedData['name'] ??
+                              '',
+                          'name':
+                              convertedData['company'] ??
+                              convertedData['name'] ??
+                              '',
+                          'pic':
+                              'Bertemu dengan - ${convertedData['role'] ?? convertedData['pic'] ?? ''}',
+                          'contactName': convertedData['contactName'] ?? '-',
+                          'phone': convertedData['phone'] ?? '-',
+                          'address': convertedData['address'] ?? '-',
+                          'potensi': convertedData['potensi'] ?? '-',
+                          'status': 'Pipeline',
+                          'source':
+                              convertedData['source'] ?? 'Lead Conversion',
+                          'product':
+                              convertedData['product'] ??
+                              'Layanan Medis Utama (Core Medical Services)',
+                          'date': convertedData['date'] ?? '23 Agu 2026',
+                        });
+                        _leadsList.remove(item);
+                        _selectedTab = 1; // Switch to List Prospek
+                      });
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              '${convertedData['company'] ?? convertedData['name']} berhasil dikonversi ke Prospek!',
+                            ),
+                            backgroundColor: const Color(0xFF0D2B45),
+                          ),
+                        );
+                      }
+                    } else if (result['action'] == 'update') {
+                      final updatedData = result['data'];
+                      setState(() {
+                        final idx = _leadsList.indexOf(item);
+                        if (idx != -1) {
+                          _leadsList[idx] = updatedData;
+                        }
+                      });
+                    }
+                  }
                 },
                 behavior: HitTestBehavior.opaque,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
                   child: Text(
-                    'Konversi ke Prospek >',
+                    'Lihat detail >',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
@@ -786,167 +746,421 @@ class _ProspekScreenState extends State<ProspekScreen> {
   }
 
   // ── 2. KANBAN TAB VIEW ─────────────────────────────────────────────────────
+  String _kanbanWaktu = 'Semua Waktu';
+  String _kanbanProduk = 'Semua Produk';
+  String _kanbanUrutan = 'Terbaru Masuk';
+
   Widget _buildKanbanView() {
-    final columns = [
-      {
-        'title': 'Pipeline (2)',
-        'items': [
-          {
-            'title': 'PT Telekomunikasi Indonesia',
-            'company': 'PT Telekomunikasi Indonesia',
-            'pic': 'Ir. Hendra Gunawan',
-            'val': 'Rp 85.000.000',
-            'potensi': 'Rp 85.000.000',
-            'status': 'Pipeline',
-          },
-          {
-            'title': 'CV Sentosa Abadi Jaya',
-            'company': 'CV Sentosa Abadi Jaya',
-            'pic': 'Siti Rahmawati',
-            'val': 'Rp 35.000.000',
-            'potensi': 'Rp 35.000.000',
-            'status': 'Pipeline',
-          },
-        ],
-      },
-      {
-        'title': 'Meeting (2)',
-        'items': [
-          {
-            'title': 'PT Digital Mega Pratama',
-            'company': 'PT Digital Mega Pratama',
-            'pic': 'Agus Supriyadi',
-            'val': 'Rp 50.000.000',
-            'potensi': 'Rp 50.000.000',
-            'status': 'Meeting',
-          },
-          {
-            'title': 'PT Nusantara Logistik Makmur',
-            'company': 'PT Nusantara Logistik Makmur',
-            'pic': 'Dimas Anggara',
-            'val': 'Rp 120.000.000',
-            'potensi': 'Rp 120.000.000',
-            'status': 'Meeting',
-          },
-        ],
-      },
-      {
-        'title': 'Deal (1)',
-        'items': [
-          {
-            'title': 'PT Jaya Sentosa Abadi',
-            'company': 'PT Jaya Sentosa Abadi',
-            'pic': 'Maya Puspita',
-            'val': 'Rp 65.000.000',
-            'potensi': 'Rp 65.000.000',
-            'status': 'Deal',
-          },
-        ],
-      },
+    final allProducts = const [
+      'Layanan Medis Utama (Core Medical Services)',
+      'Layanan Pemeriksaan & Diagnosis (Diagnostic & Laboratory)',
+      'Layanan Unggulan (Center of Excellence)',
+      'Layanan Digital & Modifikasi (Modern Services)',
+      'Program Keanggotaan & Komunitas (Hospital Programs)',
     ];
 
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      itemCount: columns.length,
-      itemBuilder: (context, colIndex) {
-        final col = columns[colIndex];
-        final items = col['items'] as List<Map<String, String>>;
+    // Filtered & sorted list combining both Leads and Prospects
+    final List<Map<String, dynamic>> combined = [
+      ..._leadsList,
+      ..._prospekList,
+    ];
+    List<Map<String, dynamic>> filtered = List.from(combined);
 
-        return Container(
-          width: 260,
-          margin: const EdgeInsets.only(right: 12),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.85),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.white,
-              width: 1.5,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    col['title'] as String,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF0D2B45),
-                    ),
-                  ),
-                  const Icon(
-                    Icons.more_horiz,
-                    color: Color(0xFF0D2B45),
-                    size: 20,
-                  ),
-                ],
+    // Filter by produk
+    if (_kanbanProduk != 'Semua Produk') {
+      filtered = filtered.where((e) => e['product'] == _kanbanProduk).toList();
+    }
+
+    // Sort
+    if (_kanbanUrutan == 'Nilai potensi tertinggi') {
+      filtered.sort((a, b) {
+        final aVal =
+            int.tryParse(
+              (a['potensi'] ?? '0').toString().replaceAll(
+                RegExp(r'[^0-9]'),
+                '',
               ),
-              const SizedBox(height: 10),
+            ) ??
+            0;
+        final bVal =
+            int.tryParse(
+              (b['potensi'] ?? '0').toString().replaceAll(
+                RegExp(r'[^0-9]'),
+                '',
+              ),
+            ) ??
+            0;
+        return bVal.compareTo(aVal);
+      });
+    }
+
+    // Lane definitions
+    const lanes = [
+      {'key': 'Lead', 'label': 'Lead'},
+      {'key': 'Contact', 'label': 'Contact'},
+      {'key': 'Meeting', 'label': 'Meeting'},
+      {'key': 'Proposal', 'label': 'Proposal'},
+      {'key': 'Deal', 'label': 'Deal'},
+    ];
+
+    // Map prospek status to lane key
+    String toLaneKey(String status) {
+      switch (status) {
+        case 'Pipeline':
+          return 'Contact';
+        case 'Meeting':
+          return 'Meeting';
+        case 'Deal':
+          return 'Deal';
+        case 'Proposal':
+          return 'Proposal';
+        default:
+          return 'Lead';
+      }
+    }
+
+    return Column(
+      children: [
+        // ── Filter Bar ─────────────────────────────────────────────────
+        Container(
+          color: const Color(0xFFF3F6F8),
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          child: Row(
+            children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, i) {
-                    final item = items[i];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => DetailProspekScreen(data: item),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFF7A00),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item['title']!,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              item['pic']!,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.9),
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              item['val']!,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF0D2B45),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                child: _kanbanDropdown(
+                  label: 'Waktu Masuk',
+                  value: _kanbanWaktu,
+                  options: const [
+                    'Semua Waktu',
+                    '7 hari terakhir',
+                    '30 hari terakhir',
+                  ],
+                  onChanged: (v) => setState(() => _kanbanWaktu = v),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _kanbanDropdown(
+                  label: 'Produk',
+                  value: _kanbanProduk,
+                  options: ['Semua Produk', ...allProducts],
+                  onChanged: (v) => setState(() => _kanbanProduk = v),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _kanbanDropdown(
+                  label: 'Urutkan Berdasarkan',
+                  value: _kanbanUrutan,
+                  options: const [
+                    'Terbaru Masuk',
+                    'Nilai potensi tertinggi',
+                    'Terlama tanpa aktivitas',
+                  ],
+                  onChanged: (v) => setState(() => _kanbanUrutan = v),
                 ),
               ),
             ],
           ),
+        ),
+
+        // ── Lane List (vertical scroll) ─────────────────────────────────
+        Expanded(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+            itemCount: lanes.length,
+            itemBuilder: (context, laneIndex) {
+              final lane = lanes[laneIndex];
+              final laneKey = lane['key']!;
+              final laneLabel = lane['label']!;
+              final scrollController = ScrollController();
+
+              final laneItems = filtered
+                  .where((e) => toLaneKey(e['status'] ?? '') == laneKey)
+                  .toList();
+
+              // Total potensi in this lane
+              int totalPotensi = 0;
+              for (final item in laneItems) {
+                final raw = (item['potensi'] ?? '0').toString().replaceAll(
+                  RegExp(r'[^0-9]'),
+                  '',
+                );
+                totalPotensi += int.tryParse(raw) ?? 0;
+              }
+              final totalStr = totalPotensi > 0
+                  ? 'Rp ${(totalPotensi / 1000000).toStringAsFixed(0)}jt'
+                  : 'Rp 0';
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6B8BA4).withValues(alpha: 0.22),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Lane header
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '$laneLabel . ${laneItems.length}',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF0D2B45),
+                            ),
+                          ),
+                          Text(
+                            totalStr,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF0D2B45),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Horizontal scrollable cards or empty state
+                    if (laneItems.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
+                        child: Text(
+                          'List $laneLabel Kosong',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            color: const Color(0xFF0D2B45)
+                                .withValues(alpha: 0.45),
+                          ),
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        height: 130,
+                        child: Scrollbar(
+                          controller: scrollController,
+                          thumbVisibility: true,
+                          thickness: 4.0,
+                          radius: const Radius.circular(8),
+                          child: ListView.builder(
+                            controller: scrollController,
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                            itemCount: laneItems.length,
+                            itemBuilder: (context, i) {
+                              final item = laneItems[i];
+                              final company =
+                                  item['company'] ??
+                                  item['name'] ??
+                                  'Nama Perusahaan';
+                              final date = item['date'] ?? '';
+                              final potensi =
+                                  item['potensi'] ?? 'Nilai Transaksi';
+
+                              return GestureDetector(
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        DetailProspekScreen(data: item),
+                                  ),
+                                ),
+                                child: Container(
+                                  width: 170,
+                                  margin: const EdgeInsets.only(right: 10),
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.06,
+                                        ),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        company,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF0D2B45),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        date.isNotEmpty
+                                            ? 'Masuk $date'
+                                            : 'Lama Prospek ada di tahap ini',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 10,
+                                          color: const Color(0xFF6B8BA4),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Potensi ',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 10,
+                                              color: const Color(0xFF6B8BA4),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              potensi,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: const Color(
+                                                      0xFF4CAF50,
+                                                    ),
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _kanbanDropdown({
+    required String label,
+    required String value,
+    required List<String> options,
+    required void Function(String) onChanged,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder: (_) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  child: Text(
+                    label,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0D2B45),
+                    ),
+                  ),
+                ),
+                const Divider(height: 1),
+                ...options.map(
+                  (opt) => ListTile(
+                    title: Text(
+                      opt,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 14,
+                        fontWeight: value == opt
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: const Color(0xFF0D2B45),
+                      ),
+                    ),
+                    trailing: value == opt
+                        ? const Icon(
+                            Icons.check_rounded,
+                            color: Color(0xFFFF7A00),
+                          )
+                        : null,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      onChanged(opt);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: const Color(0xFF0D2B45).withValues(alpha: 0.18),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF0D2B45),
+                ),
+              ),
+            ),
+            const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              size: 16,
+              color: Color(0xFF0D2B45),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
