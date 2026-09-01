@@ -1,8 +1,10 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'approval_proposal_screen.dart';
+import 'sales_proposal_pipeline_screen.dart';
 
 class BuatProposalScreen extends StatefulWidget {
   final String? initialCompany;
@@ -29,6 +31,7 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
 
   bool _isDiscountRequested = true;
   String _uploadedFileName = 'Penawaran_Rs_Harapan_Semua.pdf';
+  late String _uploadedDocId;
   bool _isCustomerDropdownOpen = false;
   bool _isProductDropdownOpen = false;
 
@@ -48,9 +51,19 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
     'Marcon Revise Kerjasama',
   ];
 
+  String _generateDocId() {
+    final now = DateTime.now();
+    final dateStr =
+        '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+    final randomHex =
+        Random().nextInt(0xFFFF).toRadixString(16).padLeft(4, '0').toUpperCase();
+    return 'DOC-$dateStr-$randomHex';
+  }
+
   @override
   void initState() {
     super.initState();
+    _uploadedDocId = _generateDocId();
     _selectedCustomer = widget.initialCompany ?? _customerList.first;
     if (!_customerList.contains(_selectedCustomer)) {
       _customerList.insert(0, _selectedCustomer);
@@ -138,10 +151,18 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                   'Proposal_Penawaran_${_selectedCustomer.replaceAll(' ', '_')}.pdf',
                   style: GoogleFonts.plusJakartaSans(fontSize: 13),
                 ),
+                subtitle: Text(
+                  'Klik untuk memperbarui & generate ID Berkas baru',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    color: const Color(0xFF8FA1B0),
+                  ),
+                ),
                 onTap: () {
                   setState(() {
                     _uploadedFileName =
                         'Proposal_Penawaran_${_selectedCustomer.replaceAll(' ', '_')}.pdf';
+                    _uploadedDocId = _generateDocId();
                   });
                   Navigator.pop(ctx);
                 },
@@ -152,9 +173,17 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                   'Penawaran_Rs_Harapan_Semua.pdf',
                   style: GoogleFonts.plusJakartaSans(fontSize: 13),
                 ),
+                subtitle: Text(
+                  'Klik untuk memperbarui & generate ID Berkas baru',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    color: const Color(0xFF8FA1B0),
+                  ),
+                ),
                 onTap: () {
                   setState(() {
                     _uploadedFileName = 'Penawaran_Rs_Harapan_Semua.pdf';
+                    _uploadedDocId = _generateDocId();
                   });
                   Navigator.pop(ctx);
                 },
@@ -173,11 +202,15 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
       'price': _priceController.text.trim(),
       'expiredDate': _expiredDateController.text.trim(),
       'fileName': _uploadedFileName,
+      'docId': _uploadedDocId,
       'isDiscount': _isDiscountRequested,
       'notes': _notesController.text.trim(),
       'status': 'Menunggu Approval',
       'submittedAt': '23 Agu 2026',
     };
+
+    // Register proposal globally for full synchronization across screens
+    SalesProposalPipelineScreen.registerProposal(proposalData);
 
     // Navigate to Approval Screen for supervisor/manager review
     final approvalResult = await Navigator.push<Map<String, dynamic>>(
@@ -513,7 +546,7 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
-                                    vertical: 8,
+                                    vertical: 10,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -528,27 +561,70 @@ class _BuatProposalScreenState extends State<BuatProposalScreen> {
                                       const Icon(
                                         Icons.picture_as_pdf,
                                         color: Colors.red,
-                                        size: 20,
+                                        size: 24,
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: 10),
                                       Expanded(
-                                        child: Text(
-                                          _uploadedFileName,
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: const Color(0xFF0D2B45),
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              _uploadedFileName,
+                                              style: GoogleFonts.plusJakartaSans(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF0D2B45),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFFFF7A00)
+                                                        .withValues(alpha: 0.12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(6),
+                                                  ),
+                                                  child: Text(
+                                                    'ID Berkas: $_uploadedDocId',
+                                                    style: GoogleFonts
+                                                        .plusJakartaSans(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: const Color(
+                                                          0xFFFF7A00),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       GestureDetector(
                                         onTap: _simulateUploadFile,
-                                        child: const Icon(
-                                          Icons.swap_horiz,
-                                          color: Color(0xFFFF7A00),
-                                          size: 18,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF3F6F8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: const Icon(
+                                            Icons.swap_horiz,
+                                            color: Color(0xFFFF7A00),
+                                            size: 20,
+                                          ),
                                         ),
                                       ),
                                     ],

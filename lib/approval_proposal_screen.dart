@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'sales_proposal_pipeline_screen.dart';
 
 class ApprovalProposalScreen extends StatefulWidget {
   final Map<String, dynamic> proposalData;
@@ -35,6 +36,12 @@ class _ApprovalProposalScreenState extends State<ApprovalProposalScreen> {
     setState(() {
       _currentStatus = 'Disetujui';
     });
+
+    final approvedData = Map<String, dynamic>.from(widget.proposalData);
+    approvedData['status'] = 'Approved';
+    approvedData['progressNote'] = 'Proposal telah disetujui Manager';
+    approvedData['progressNoteColor'] = const Color(0xFF5BA32A);
+    SalesProposalPipelineScreen.registerProposal(approvedData);
 
     if (widget.onDecision != null) {
       widget.onDecision!('Disetujui', 'Proposal telah disetujui oleh Manager.');
@@ -185,6 +192,14 @@ class _ApprovalProposalScreenState extends State<ApprovalProposalScreen> {
                         setState(() {
                           _currentStatus = 'Ditolak';
                         });
+
+                        final rejectedData = Map<String, dynamic>.from(widget.proposalData);
+                        rejectedData['status'] = 'Rejected';
+                        rejectedData['progressNote'] =
+                            'Alasan : ${_rejectReasonController.text.trim().isEmpty ? "Perlu revisi penawaran" : _rejectReasonController.text.trim()}';
+                        rejectedData['progressNoteColor'] = const Color(0xFFFF3B30);
+                        SalesProposalPipelineScreen.registerProposal(rejectedData);
+
                         if (widget.onDecision != null) {
                           widget.onDecision!(
                             'Ditolak',
@@ -229,6 +244,7 @@ class _ApprovalProposalScreenState extends State<ApprovalProposalScreen> {
     final expiredDate = widget.proposalData['expiredDate'] ?? '30/09/2026';
     final fileName =
         widget.proposalData['fileName'] ?? 'Penawaran_Rs_Harapan_Semua.pdf';
+    final docId = widget.proposalData['docId'] ?? 'DOC-20260901-7B1A';
     final notes =
         widget.proposalData['notes'] ??
         'Pengajuan diskon 5% untuk kontrak tahunan.';
@@ -464,7 +480,7 @@ class _ApprovalProposalScreenState extends State<ApprovalProposalScreen> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
-                                    vertical: 8,
+                                    vertical: 10,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -478,19 +494,54 @@ class _ApprovalProposalScreenState extends State<ApprovalProposalScreen> {
                                       const Icon(
                                         Icons.picture_as_pdf,
                                         color: Colors.red,
-                                        size: 22,
+                                        size: 24,
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: 10),
                                       Expanded(
-                                        child: Text(
-                                          fileName,
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: const Color(0xFF0D2B45),
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              fileName,
+                                              style: GoogleFonts.plusJakartaSans(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color(0xFF0D2B45),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFFFF7A00)
+                                                        .withValues(alpha: 0.12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(6),
+                                                  ),
+                                                  child: Text(
+                                                    'ID Berkas: $docId',
+                                                    style: GoogleFonts
+                                                        .plusJakartaSans(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: const Color(
+                                                          0xFFFF7A00),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       const Icon(
@@ -610,23 +661,33 @@ class _ApprovalProposalScreenState extends State<ApprovalProposalScreen> {
 
   Widget _detailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              color: const Color(0xFF4A6070),
+          // Label (fixed portion, left-aligned)
+          Expanded(
+            flex: 4,
+            child: Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                color: const Color(0xFF4A6070),
+              ),
             ),
           ),
-          Text(
-            value,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF0D2B45),
+          const SizedBox(width: 8),
+          // Value (wraps if too long, right-aligned)
+          Expanded(
+            flex: 5,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF0D2B45),
+              ),
             ),
           ),
         ],

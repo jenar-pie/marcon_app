@@ -81,39 +81,39 @@ class _AktivitasScreenState extends State<AktivitasScreen> {
   // Activities yang tertahan (stuck activities)
   final List<Map<String, dynamic>> _aktivitasTertahan = [
     {
-      'company': 'RS Hermina Kemayoran',
+      'company': 'PT Kimia Farma Tbk',
       'desc': 'Telepon 5 hari lalu, Tidak ada next action',
       'isLead': true,
       'leadData': {
-        'company': 'RS Hermina Kemayoran',
-        'name': 'RS Hermina Kemayoran',
-        'contactName': 'Dr. Herman Santoso',
-        'phone': '0812-9999-8888',
-        'address': 'Jl. Kemayoran No. 1, Jakarta',
+        'company': 'PT Kimia Farma Tbk',
+        'name': 'PT Kimia Farma Tbk',
+        'contactName': 'Dr. Andi Wijaya',
+        'phone': '0811-2222-3333',
+        'address': 'Jl. Veteran No. 9, Jakarta',
         'status': 'Lead Baru',
-        'potensi': 'Rp 75.000.000',
+        'potensi': 'Rp 150.000.000',
         'source': 'Website',
         'product': 'Layanan Medis Utama (Core Medical Services)',
-        'date': '21 Agu 2026',
-        'pic': 'Bertemu dengan - Dr. Herman Santoso',
+        'date': '24 Agu 2026',
+        'pic': 'Bertemu dengan - Dr. Andi Wijaya',
       },
     },
     {
-      'company': 'RS Pondok Indah Group',
+      'company': 'BPJS Kesehatan Jakarta',
       'desc': 'Deskripsi: Sudah meeting tapi proposal penawaran belum dikirim',
       'isLead': false,
       'prospectData': {
-        'company': 'RS Pondok Indah Group',
-        'name': 'RS Pondok Indah Group',
-        'contactName': 'Ibu Shanti Kusuma',
-        'phone': '0813-1111-2222',
-        'address': 'Pondok Indah, Jakarta Selatan',
+        'company': 'BPJS Kesehatan Jakarta',
+        'name': 'BPJS Kesehatan Jakarta',
+        'contactName': 'Ibu Rina Lestari',
+        'phone': '0812-3456-7890',
+        'address': 'Jl. Letjen Suprapto, Cempaka Putih',
         'status': 'Pipeline',
-        'potensi': 'Rp 280.000.000',
-        'source': 'Direct Sales',
+        'potensi': 'Rp 450.000.000',
+        'source': 'Referral',
         'product': 'Layanan Pemeriksaan & Diagnosis (Diagnostic & Laboratory)',
-        'date': '19 Agu 2026',
-        'pic': 'Bertemu dengan - Ibu Shanti Kusuma',
+        'date': '22 Agu 2026',
+        'pic': 'Bertemu dengan - Ibu Rina Lestari',
       },
     },
   ];
@@ -252,6 +252,10 @@ class _AktivitasScreenState extends State<AktivitasScreen> {
                         currentData['trenTarget'] as List<int>,
                         currentData['trenCaption'] as String,
                       ),
+                      const SizedBox(height: 20),
+
+                      // ── Riwayat Aktivitas Terbaru Card ──
+                      _buildRiwayatAktivitasTerbaruSection(),
                       const SizedBox(height: 24),
 
                       // ── Lihat Riwayat Button ──
@@ -736,15 +740,203 @@ class _AktivitasScreenState extends State<AktivitasScreen> {
     );
   }
 
+  Widget _buildRiwayatAktivitasTerbaruSection() {
+    final recentList = LihatRiwayatLogScreen.globalActivities.take(3).toList();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.history_rounded, color: Color(0xFFFF7A00), size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Riwayat Aktivitas Terbaru',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0D2B45),
+                    ),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LihatRiwayatLogScreen(),
+                    ),
+                  );
+                  setState(() {});
+                },
+                child: Text(
+                  'Lihat Semua',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFFF7A00),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          if (recentList.isEmpty)
+            Center(
+              child: Text(
+                'Belum ada riwayat aktivitas',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            )
+          else
+            Column(
+              children: recentList.map((item) {
+                final String jenis = item['jenis']?.toString() ?? 'Aktivitas';
+                final String customer = item['customer']?.toString() ?? 'Customer';
+                final String waktu = item['waktu']?.toString() ?? '-';
+                final String nextAct = item['nextAction']?.toString() ?? 'Follow up';
+                final String notulensi = item['notulensi']?.toString() ?? '';
+
+                Color badgeColor;
+                IconData badgeIcon;
+                switch (jenis.toLowerCase()) {
+                  case 'kunjungan':
+                    badgeColor = const Color(0xFFFF7A00);
+                    badgeIcon = Icons.location_on_rounded;
+                    break;
+                  case 'telepon':
+                    badgeColor = const Color(0xFF1976D2);
+                    badgeIcon = Icons.phone_in_talk_rounded;
+                    break;
+                  case 'whatsapp':
+                    badgeColor = const Color(0xFF2E7D32);
+                    badgeIcon = Icons.chat_rounded;
+                    break;
+                  case 'meeting':
+                    badgeColor = const Color(0xFF7B1FA2);
+                    badgeIcon = Icons.groups_rounded;
+                    break;
+                  default:
+                    badgeColor = const Color(0xFFE65100);
+                    badgeIcon = Icons.assignment_rounded;
+                }
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: badgeColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(badgeIcon, color: badgeColor, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    customer,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF0D2B45),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Text(
+                                  waktu,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 10,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              notulensi.isNotEmpty ? notulensi : 'Catatan aktivitas',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11,
+                                color: const Color(0xFF475569),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF3E0),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'Next Action: $nextAct',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFFE65100),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildLihatRiwayatButton() {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => const LihatRiwayatLogScreen(),
           ),
         );
+        setState(() {});
       },
       child: Container(
         width: double.infinity,

@@ -9,6 +9,8 @@ import 'prospek_screen.dart';
 import 'aktivitas_screen.dart';
 import 'checkin_camera_screen.dart';
 import 'catat_notulensi_screen.dart';
+import 'detail_prospek_screen.dart';
+import 'sales_proposal_pipeline_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -174,7 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOutCubic,
               left: _isSidebarOpen ? 0 : -88,
-              top: 80,
+              top: 140,
               child: _buildCollapsibleSideNavigationBar(),
             ),
           ],
@@ -189,12 +191,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Map<String, dynamic>> _jadwalList = [
     {
       'id': '1',
-      'tujuan': 'Tujuan - Bertemu dengan',
-      'perusahaan': 'RS Siloam Hospitals',
+      'tujuan': 'Tujuan - Meeting & Presentasi Solusi',
+      'perusahaan': 'Siloam Hospitals Group',
       'waktu': '08:00 - 09:30',
       'tanggal': 'Hari ini',
       'filterGroup': 'Hari ini',
-      'alamat': 'Jl. Garnisun Kav 2-3, Jakarta Selatan',
+      'alamat': 'Lippo Karawaci, Tangerang',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -202,12 +204,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'id': '2',
-      'tujuan': 'Tujuan - Presentasi Produk',
-      'perusahaan': 'RSUP Dr. Cipto Mangunkusumo',
+      'tujuan': 'Tujuan - Kunjungan Perkenalan & Prospecting',
+      'perusahaan': 'PT Kimia Farma Tbk',
       'waktu': '11:00 - 12:00',
       'tanggal': 'Hari ini',
       'filterGroup': 'Hari ini',
-      'alamat': 'Jl. Diponegoro No.71, Jakarta Pusat',
+      'alamat': 'Jl. Veteran No. 9, Jakarta',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -215,12 +217,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'id': '3',
-      'tujuan': 'Tujuan - Follow Up Proposal',
-      'perusahaan': 'RS Pondok Indah Group',
+      'tujuan': 'Tujuan - Follow Up Proposal Penawaran',
+      'perusahaan': 'Halodoc Indonesia',
       'waktu': '14:00 - 15:00',
       'tanggal': 'Hari ini',
       'filterGroup': 'Hari ini',
-      'alamat': 'Jl. Metro Duta Kav. UE, Jakarta Selatan',
+      'alamat': 'Kuningan, Jakarta Selatan',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -228,12 +230,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'id': '4',
-      'tujuan': 'Tujuan - Negosiasi Kontrak',
-      'perusahaan': 'RS Gading Pluit',
+      'tujuan': 'Tujuan - Negosiasi Kontrak Kerjasama',
+      'perusahaan': 'BPJS Kesehatan Jakarta',
       'waktu': '10:00 - 11:30',
       'tanggal': 'Rabu, 02 Sept',
       'filterGroup': 'Mingguan',
-      'alamat': 'Jl. Boulevard Timur, Jakarta Utara',
+      'alamat': 'Jl. Letjen Suprapto, Cempaka Putih',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -241,12 +243,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'id': '5',
-      'tujuan': 'Tujuan - Demo Reagen Baru',
-      'perusahaan': 'RS Kanker Dharmais',
+      'tujuan': 'Tujuan - Review Proposal & Demo Sistem',
+      'perusahaan': 'Alodokter Pratama',
       'waktu': '13:00 - 14:30',
       'tanggal': 'Kamis, 03 Sept',
       'filterGroup': 'Mingguan',
-      'alamat': 'Jl. Letjen S. Parman No.84, Jakarta Barat',
+      'alamat': 'Sudirman, Jakarta Pusat',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -254,12 +256,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'id': '6',
-      'tujuan': 'Tujuan - Maintenance & Technical Review',
-      'perusahaan': 'RS Medistra',
+      'tujuan': 'Tujuan - Technical Assessment Meeting',
+      'perusahaan': 'Bio Farma (Persero)',
       'waktu': '09:00 - 10:30',
       'tanggal': 'Jumat, 04 Sept',
       'filterGroup': 'Mingguan',
-      'alamat': 'Jl. Jend. Gatot Subroto Kav.59, Jakarta Selatan',
+      'alamat': 'Jl. Pasteur No. 28, Bandung',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -267,12 +269,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'id': '7',
-      'tujuan': 'Tujuan - Courtesy Visit Direksi',
-      'perusahaan': 'RS Mitra Keluarga Kelapa Gading',
+      'tujuan': 'Tujuan - Presentasi & Review Penawaran',
+      'perusahaan': 'PT Prodia Widyahusada Tbk',
       'waktu': '10:00 - 12:00',
       'tanggal': '15 Sept 2026',
       'filterGroup': 'Bulanan',
-      'alamat': 'Jl. Raya Gading Kirana, Jakarta Utara',
+      'alamat': 'Jl. Kramat Raya, Jakarta Pusat',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -280,12 +282,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'id': '8',
-      'tujuan': 'Tujuan - Penandatanganan Kerjasama',
-      'perusahaan': 'RS Royal Taruma',
+      'tujuan': 'Tujuan - Penandatanganan Kerjasama Deal',
+      'perusahaan': 'Yayasan Jantung Indonesia',
       'waktu': '14:00 - 15:30',
       'tanggal': '22 Sept 2026',
       'filterGroup': 'Bulanan',
-      'alamat': 'Jl. Daan Mogot No.34, Jakarta Barat',
+      'alamat': 'Menteng, Jakarta Pusat',
+      'link': 'Buka di Maps',
+      'status': 'pending',
+      'checkInTime': null,
+      'checkOutTime': null,
+    },
+    {
+      'id': '9',
+      'tujuan': 'Tujuan - Kunjungan Inisiasi Prospecting',
+      'perusahaan': 'PT Kalbe Farma Tbk',
+      'waktu': '09:30 - 11:00',
+      'tanggal': '25 Sept 2026',
+      'filterGroup': 'Bulanan',
+      'alamat': 'Kawasan Industri Pulogadung, Jakarta',
+      'link': 'Buka di Maps',
+      'status': 'pending',
+      'checkInTime': null,
+      'checkOutTime': null,
+    },
+    {
+      'id': '10',
+      'tujuan': 'Tujuan - Follow Up Program Partnership',
+      'perusahaan': 'PT Pharos Indonesia',
+      'waktu': '13:30 - 15:00',
+      'tanggal': '28 Sept 2026',
+      'filterGroup': 'Bulanan',
+      'alamat': 'Limo, Kebayoran Lama, Jakarta',
       'link': 'Buka di Maps',
       'status': 'pending',
       'checkInTime': null,
@@ -304,12 +332,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final status = item['status'] as String? ?? 'pending';
 
     if (status == 'completed') {
-      await Navigator.push<Map<String, dynamic>>(
+      final notulensiResult = await Navigator.push<Map<String, dynamic>>(
         context,
         MaterialPageRoute(
           builder: (context) => CatatNotulensiScreen(scheduleItem: item),
         ),
       );
+      if (notulensiResult != null) {
+        final compName =
+            item['perusahaan'] as String? ?? 'PT SUMBER MAKMUR';
+        DetailProspekScreen.addActivityForCompany(compName, notulensiResult);
+      }
       setState(() {});
       return;
     }
@@ -345,12 +378,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       if (mode == 'checkout') {
         // Automatically navigate to CatatNotulensiScreen after Check-out
-        await Navigator.push<Map<String, dynamic>>(
+        final notulensiResult = await Navigator.push<Map<String, dynamic>>(
           context,
           MaterialPageRoute(
             builder: (context) => CatatNotulensiScreen(scheduleItem: item),
           ),
         );
+        if (notulensiResult != null) {
+          final compName =
+              item['perusahaan'] as String? ?? 'PT SUMBER MAKMUR';
+          DetailProspekScreen.addActivityForCompany(compName, notulensiResult);
+        }
         setState(() {});
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -372,8 +410,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final String titleText = _selectedJadwalFilter == 'Hari ini'
         ? 'Jadwal hari ini'
         : (_selectedJadwalFilter == 'Mingguan'
-            ? 'Jadwal mingguan'
-            : 'Jadwal bulanan');
+              ? 'Jadwal mingguan'
+              : 'Jadwal bulanan');
 
     final String progressText = _selectedJadwalFilter == 'Hari ini'
         ? '2/5'
@@ -1427,7 +1465,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // SIDEBAR NAVIGATION BAR
   Widget _buildCollapsibleSideNavigationBar() {
-    final double maxSidebarHeight = MediaQuery.of(context).size.height - 100;
+    final double maxSidebarHeight = MediaQuery.of(context).size.height - 200;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1513,6 +1551,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             topRight: Radius.circular(32),
           ),
           child: AktivitasScreen(
+            onBack: () => setState(() => _selectedIndex = 0),
+          ),
+        );
+      case 3:
+        return ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
+          ),
+          child: SalesProposalPipelineScreen(
             onBack: () => setState(() => _selectedIndex = 0),
           ),
         );
